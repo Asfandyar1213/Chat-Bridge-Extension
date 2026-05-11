@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatBridge</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────────────── -->
+<header class="header">
+  <div class="logo">
+    <span class="logo-icon">⚡</span>
+    <span class="logo-text">Chat<em>Bridge</em></span>
+  </div>
+  <div class="header-actions">
+    <button class="icon-btn" id="btn-history" title="Saved Chats">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+    </button>
+    <button class="icon-btn" id="btn-settings" title="Settings">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ── Main view ──────────────────────────────────────────── -->
+<div id="view-main" class="view active">
+
+  <!-- Step 1: Extract -->
+  <section class="card" id="section-extract">
+    <div class="card-label">
+      <span class="step-badge">1</span>
+      Capture Chat
+    </div>
+
+    <div class="site-detect" id="site-detect">
+      <span class="detect-dot" id="detect-dot"></span>
+      <span id="detect-label">Detecting site…</span>
+    </div>
+
+    <button class="btn-primary" id="btn-extract">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Extract Full Chat
+    </button>
+
+    <div class="extract-result hidden" id="extract-result">
+      <div class="result-meta" id="result-meta"></div>
+      <textarea class="preview-box" id="preview-text" readonly spellcheck="false"></textarea>
+      <div class="preview-actions">
+        <button class="btn-sm" id="btn-copy">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+        <button class="btn-sm" id="btn-save">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save
+        </button>
+        <button class="btn-sm btn-summarize" id="btn-summarize">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Summarize
+        </button>
+        <button class="btn-sm btn-clear" id="btn-clear">✕ Clear</button>
+      </div>
+    </div>
+
+    <!-- Summary result -->
+    <div class="summary-block hidden" id="summary-block">
+      <div class="summary-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        AI Summary
+        <button class="btn-xs" id="btn-use-summary">Use Summary ↓</button>
+      </div>
+      <div class="summary-text" id="summary-text"></div>
+    </div>
+  </section>
+
+  <!-- Step 2: Target -->
+  <section class="card" id="section-target">
+    <div class="card-label">
+      <span class="step-badge">2</span>
+      Choose Target LLM
+    </div>
+
+    <div class="tabs-row">
+      <button class="tab-btn active" data-tab="open">Open Tabs</button>
+      <button class="tab-btn" data-tab="new">New Tab</button>
+    </div>
+
+    <div id="tab-open" class="tab-content active">
+      <div class="tab-list" id="tab-list">
+        <div class="loading-tabs">
+          <div class="spinner"></div>
+          Scanning open AI tabs…
+        </div>
+      </div>
+      <button class="btn-refresh" id="btn-refresh-tabs">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+        Refresh
+      </button>
+    </div>
+
+    <div id="tab-new" class="tab-content hidden">
+      <div class="llm-grid" id="llm-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 3: Inject -->
+  <section class="card" id="section-inject">
+    <div class="card-label">
+      <span class="step-badge">3</span>
+      Inject Options
+    </div>
+
+    <div class="option-row">
+      <label class="option-label">Mode</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" data-mode="drip" id="mode-drip">
+          <span class="toggle-icon">💧</span> Drip
+        </button>
+        <button class="toggle-btn" data-mode="instant" id="mode-instant">
+          <span class="toggle-icon">⚡</span> Instant
+        </button>
+      </div>
+    </div>
+
+    <div class="option-row" id="speed-row">
+      <label class="option-label">Speed <span id="speed-val">8ms</span>/char</label>
+      <input type="range" min="2" max="50" value="8" class="speed-slider" id="speed-slider" />
+      <div class="speed-labels"><span>Fast</span><span>Slow</span></div>
+    </div>
+
+    <div class="option-row">
+      <label class="option-label">Content</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" data-content="full" id="content-full">Full Chat</button>
+        <button class="toggle-btn" data-content="summary" id="content-summary">Summary</button>
+      </div>
+    </div>
+
+    <button class="btn-inject" id="btn-inject" disabled>
+      <span class="inject-icon">💧</span>
+      <span id="inject-label">Select a target first</span>
+    </button>
+  </section>
+
+</div>
+
+<!-- ── History view ────────────────────────────────────────── -->
+<div id="view-history" class="view hidden">
+  <div class="view-header">
+    <button class="back-btn" id="btn-back-history">← Back</button>
+    <span class="view-title">Saved Chats</span>
+    <button class="btn-xs danger" id="btn-clear-all">Clear All</button>
+  </div>
+  <div id="history-list" class="history-list">
+    <div class="empty-state">No saved chats yet.</div>
+  </div>
+</div>
+
+<!-- ── Settings view ─────────────────────────────────────────── -->
+<div id="view-settings" class="view hidden">
+  <div class="view-header">
+    <button class="back-btn" id="btn-back-settings">← Back</button>
+    <span class="view-title">Settings</span>
+  </div>
+  <div class="settings-list">
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <span class="setting-name">Default Mode</span>
+        <span class="setting-desc">How text is pasted by default</span>
+      </div>
+      <select class="setting-select" id="setting-mode">
+        <option value="drip">Drip (animated)</option>
+        <option value="instant">Instant</option>
+      </select>
+    </div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <span class="setting-name">Default Speed</span>
+        <span class="setting-desc">Chars per ms for drip mode</span>
+      </div>
+      <input type="number" class="setting-input" id="setting-speed" value="8" min="1" max="100" />
+    </div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <span class="setting-name">Auto-Save Extractions</span>
+        <span class="setting-desc">Save to history automatically</span>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="setting-autosave" checked />
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <span class="setting-name">Include Metadata</span>
+        <span class="setting-desc">Add source URL in export</span>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="setting-metadata" checked />
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+
+    <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+      <div class="setting-info">
+        <span class="setting-name">OpenRouter API Key</span>
+        <span class="setting-desc">Required for summarization</span>
+      </div>
+      <input type="password" class="setting-input" id="setting-openrouter-key" placeholder="sk-or-v1-..." style="width: 100%; box-sizing: border-box;" />
+    </div>
+
+    <button class="btn-primary" id="btn-save-settings">Save Settings</button>
+  </div>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
