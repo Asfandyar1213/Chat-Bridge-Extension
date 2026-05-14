@@ -126,15 +126,22 @@ async function getAiTabs() {
     try {
       const found = await chrome.tabs.query({ url: pattern });
       found.forEach((tab) => {
-        const host = new URL(tab.url).hostname.replace("www.", "");
-        const name = Object.keys(AI_NAMES).find((k) => host.includes(k));
-        tabs.push({
-          id: tab.id,
-          title: tab.title,
-          url: tab.url,
-          aiName: name ? AI_NAMES[name] : host,
-          favIconUrl: tab.favIconUrl,
-        });
+        try {
+          // Safe URL parsing with error handling
+          if (!tab.url) return;
+          const host = new URL(tab.url).hostname.replace("www.", "");
+          const name = Object.keys(AI_NAMES).find((k) => host.includes(k));
+          tabs.push({
+            id: tab.id,
+            title: tab.title,
+            url: tab.url,
+            aiName: name ? AI_NAMES[name] : host,
+            favIconUrl: tab.favIconUrl,
+          });
+        } catch (urlError) {
+          // Skip tabs with invalid URLs
+          console.warn("ChatBridge: Skipping tab with invalid URL:", tab.url);
+        }
       });
     } catch (_) {}
   }
@@ -145,18 +152,41 @@ async function getAiTabs() {
 // ── Open new tab then inject ────────────────────────────────
 async function openAndInject(url, text, mode, speed) {
   const tab = await chrome.tabs.create({ url, active: true });
-  // Wait for page load
-  await new Promise((resolve) => {
-    const listener = (tabId, info) => {
-      if (tabId === tab.id && info.status === "complete") {
-        chrome.tabs.onUpdated.removeListener(listener);
-        resolve();
-      }
-    };
-    chrome.tabs.onUpdated.addListener(listener);
-    // Timeout safety
-    setTimeout(resolve, 8000);
-  });
+  
+  // Wait for page load with proper cleanup
+  let listener = null;
+  let timeoutId = null;
+  
+  try {
+    await new Promise((resolve, reject) => {
+      listener = (tabId, info) => {
+        if (tabId === tab.id && info.status === "complete") {
+          chrome.tabs.onUpdated.removeListener(listener);
+          listener = null; // Clear reference
+          resolve();
+        }
+      };
+      
+      chrome.tabs.onUpdated.addListener(listener);
+      
+      // Timeout safety with proper cleanup
+      timeoutId = setTimeout(() => {
+        if (listener) {
+          chrome.tabs.onUpdated.removeListener(listener);
+          listener = null;
+        }
+        resolve(); // Resolve anyway to continue
+      }, 8000);
+    });
+  } finally {
+    // Ensure cleanup even if promise rejects
+    if (listener) {
+      chrome.tabs.onUpdated.removeListener(listener);
+    }
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  }
 
   // Small extra delay for React apps to hydrate
   await new Promise((r) => setTimeout(r, 1500));
