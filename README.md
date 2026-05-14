@@ -1,57 +1,66 @@
 # ⚡ ChatBridge — Universal AI Chat Copier
 
-ChatBridge is a powerful Chrome Extension (Manifest V3) designed to seamlessly bridge conversations across multiple AI chat platforms. It allows you to extract full conversations, generate concise summaries using OpenRouter, and directly inject them into other AI models with style.
+<div align="center">
+  <img src="./chatbridge_banner.png" alt="ChatBridge Banner" width="800">
+  <p><em>Seamlessly bridge conversations across the AI landscape.</em></p>
+  
+  [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg?style=flat-square)](https://github.com/theqasimkhan/Chat-Bridge-Extension)
+  [![Manifest](https://img.shields.io/badge/Manifest-V3-emerald.svg?style=flat-square)](https://developer.chrome.com/docs/extensions/mv3/intro/)
+  [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+  [![Platform](https://img.shields.io/badge/Platform-Chrome%20|%20Edge%20|%20Brave-white.svg?style=flat-square)](https://www.google.com/chrome/)
+</div>
 
-## 🌟 Features
+---
 
-- **Universal Extraction**: Supports capturing chat history from:
-  - ChatGPT
-  - Claude
-  - Google Gemini
-  - Perplexity
-  - Mistral
-  - Poe
-  - Microsoft Copilot
-  - Grok
-  - HuggingFace Chat
-- **Smart Summarization**: Integrated with **OpenRouter Auto API** to instantly summarize long conversation histories into concise bullet points.
-- **Dynamic Injection**: Paste your extracted chats or summaries into a new AI tab instantly, or use the signature **Drip Mode** to watch the prompt stream in animated real-time.
-- **Local History**: Automatically saves your last 50 extracted chats locally to your browser so you never lose context.
-- **Privacy First**: Fully client-side processing using Vanilla JavaScript. The only external API call is to OpenRouter when you explicitly request a summary.
+**ChatBridge** is a premium browser extension designed for power users of AI. It bridges the gap between different LLMs by allowing you to extract, summarize, and inject conversations across platforms with a single click. No more messy copy-pasting; just pure, structured data flow.
 
-## 🚀 Installation (Unpacked)
+## 🚀 Key Features
 
-Since this extension is not currently listed on the Chrome Web Store, you can install it manually in developer mode:
+- **🌐 Universal Support**: One-click extraction from ChatGPT, Claude, Gemini, Perplexity, Mistral, Poe, Copilot, Grok, and HuggingFace Chat.
+- **🧠 Smart Summarization**: Powered by **OpenRouter**, condense lengthy logs into actionable insights instantly.
+- **💧 Drip Injection**: Our signature feature. Watch as your prompts are "dripped" into target LLMs in real-time, bypassing common input limits and adding a touch of cinematic flair.
+- **📂 Persistent History**: Local storage of your last 50 extractions. Your data stays on your machine.
+- **🔒 Privacy First**: Zero tracking. Zero data collection. External calls only happen when you request a summary.
 
-1. Clone or download this repository to your local machine.
-2. Open Google Chrome and navigate to `chrome://extensions/`.
-3. Enable **Developer mode** using the toggle in the top right corner.
-4. Click the **Load unpacked** button in the top left.
-5. Select the `Chat-Bridge-Extension` folder.
-6. The ChatBridge icon ⚡ should now appear in your extensions toolbar!
+## 🛠️ How it Works
 
-## ⚙️ Configuration (OpenRouter API)
+1.  **Capture**: Navigate to any supported AI chat and hit **Extract Full Chat**.
+2.  **Process**: Review the raw text or use the **AI Summarizer** to condense it.
+3.  **Bridge**: Choose a target LLM (Open tab or New tab).
+4.  **Inject**: Select **Drip** or **Instant** mode and watch the magic happen.
 
-To use the **Summarize** feature, you need to provide your own OpenRouter API key:
+## 📦 Installation
 
-1. Click the ChatBridge extension icon in your toolbar.
-2. Click the **Settings (gear icon)** in the top right of the popup.
-3. Paste your OpenRouter API key (starting with `sk-or-v1-...`) into the input field.
-4. Click **Save Settings**.
-*(Note: Your API key is securely saved only in your browser's local storage).*
+Since ChatBridge is currently in developer preview, you can install it manually:
 
-## 💡 How to Use
+1.  **Download**: Clone this repository or download the ZIP.
+2.  **Extensions**: Go to `chrome://extensions/` in your browser.
+3.  **Developer Mode**: Enable the toggle in the top-right corner.
+4.  **Load**: Click **Load unpacked** and select the extension folder.
 
-1. **Capture**: Open any supported AI chat tab (like ChatGPT or Claude) and click **Extract Full Chat** from the extension popup.
-2. **Review & Summarize**: Once extracted, you can preview the raw text, save it to history, copy it to your clipboard, or click **Summarize** to condense the content using OpenRouter.
-3. **Inject**: 
-   - Select a target LLM either from your currently open tabs or spawn a "New Tab" directly from the extension.
-   - Choose whether you want to inject the "Full Chat" or the "Summary".
-   - Select your paste mode (Drip or Instant) and hit **Inject**!
+## ⚙️ Configuration
 
-## 🛠️ Technical Details
+To enable the summarization feature:
+1.  Open the extension popup.
+2.  Click the **Settings** icon.
+3.  Enter your [OpenRouter API Key](https://openrouter.ai/keys).
+4.  Save and start bridging!
 
-Built entirely with Vanilla JavaScript, HTML, and CSS. No build tools (Webpack/Vite/NPM) required.
-- **Manifest V3** compliant.
-- Content Security Policy (CSP) optimized.
-- Fallback text extraction mechanisms implemented for maximum robustness against UI changes on host platforms.
+## 🧪 Supported Platforms
+
+| Provider | Status | Extraction | Injection |
+| :--- | :---: | :---: | :---: |
+| ChatGPT | ✅ | Full | Supported |
+| Claude | ✅ | Full | Supported |
+| Gemini | ✅ | Full | Supported |
+| Perplexity | ✅ | Full | Supported |
+| Mistral | ✅ | Full | Supported |
+| Poe | ✅ | Full | Supported |
+| Copilot | ✅ | Full | Supported |
+| Grok | ✅ | Full | Supported |
+
+---
+
+<div align="center">
+  Built with ❤️ for the AI Community.
+</div>
