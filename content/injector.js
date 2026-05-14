@@ -76,8 +76,10 @@
 
     document.body.appendChild(overlay);
 
-    // Spawn floating drop particles
-    spawnDrops(overlay.querySelector("#cb-drops"));
+    // Spawn floating drop particles and store cleanup function
+    const dropsContainer = overlay.querySelector("#cb-drops");
+    const cleanupDrops = spawnDrops(dropsContainer);
+    overlay.__cleanupDrops = cleanupDrops;
 
     document.getElementById("cb-stop-btn").addEventListener("click", () => {
       overlay.setAttribute("data-stopped", "true");
@@ -103,7 +105,15 @@
       i++;
       setTimeout(() => drop.remove(), 2000);
     }, 120);
+    
+    // Store interval reference for cleanup
     container.__interval = interval;
+    
+    // Return cleanup function for explicit removal
+    return () => {
+      clearInterval(interval);
+      container.__interval = null;
+    };
   }
 
   // ── Set native value (works with React-controlled inputs) ─
@@ -194,8 +204,18 @@
       await sleep(speedMs);
     }
 
-    // Cleanup overlay
-    clearInterval(overlay.querySelector("#cb-drops")?.__interval);
+    // Cleanup overlay and drops interval
+    if (overlay.__cleanupDrops) {
+      overlay.__cleanupDrops();
+    } else {
+      // Fallback: clear via stored interval reference
+      const dropsEl = overlay.querySelector("#cb-drops");
+      if (dropsEl?.__interval) {
+        clearInterval(dropsEl.__interval);
+        dropsEl.__interval = null;
+      }
+    }
+    
     setTimeout(() => {
       overlay.classList.add("cb-drip-done");
       setTimeout(() => overlay.remove(), 1200);
